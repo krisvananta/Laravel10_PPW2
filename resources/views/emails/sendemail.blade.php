@@ -7,9 +7,13 @@
     <title>Praktikum Pemrograman Web</title>
 </head>
 <body>
-    <h3>{{ $data['name'] }}</h3>
-    <h4>{{ $data['body'] }}</h4>
+    <h3>Welcome, {{ $data['name'] }}</h3>
+    <h4> Thank you for registering yourself with us, Here are you details:
+        <li><strong>Name: </strong> {{ $data['name'] }} </li>
+        <li><strong>Email: </strong> {{ $data['email'] }} </li>
+        <li><strong>Password: </strong> {{ $data['password'] }} </li>
+    </h4>
 
-    <p>Terima kasih</p>
+    <p>Welcome blyat!</p>
 </body>
 </html>

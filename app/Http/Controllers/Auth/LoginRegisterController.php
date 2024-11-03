@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Mail\WelcomeEmail; // Import your Mailable class
+use Illuminate\Support\Facades\Mail; // Import the Mail facade
+
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 class LoginRegisterController extends Controller
@@ -33,11 +36,19 @@ class LoginRegisterController extends Controller
             'password' => 'required|string|min:8|confirmed'
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $emailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $request->password
+        ];
+
+        Mail::to($user->email)->send(new WelcomeEmail($emailData));
 
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendEmail;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -21,8 +23,6 @@ class RegisterController extends Controller
     | provide this functionality without requiring any additional code.
     |
     */
-
-    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
@@ -71,5 +71,23 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => $data['password'],
         ]);
+
+        // Mengirim email
+        $this -> sendRegistrationEmail($user);
+
+        return $user;
     }
+
+    protected function sendRegistrationEmail($user)
+    {
+        $data = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'subject' => 'Welcome blyat!',
+            'body' => "Dear {$user -> name}, \n\n Thank you for registering! Here are your detailed informations: \n\nName: {$user->name}\nEmail: {$user->email}\n\nThank you for joining!"
+        ];
+
+        Mail::to($user -> email)->send(new SendEmail($data));
+    }
+
 }
